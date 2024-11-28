@@ -1,0 +1,197 @@
+package core;
+
+public interface Agendavel {
+    void agendar(String dataHora);
+    void cancelarAgendamento();
+    String getDetalhesAgendamento();
+}
+package core;
+
+public abstract class EntidadeGerenciavel {
+    private String id;
+    private String descricao;
+
+    public EntidadeGerenciavel(String id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public abstract String gerarRelatorio();
+}
+package clinica;
+
+public class Paciente {
+    private String nome;
+    private int idade;
+    private String historicoMedico;
+
+    public Paciente(String nome, int idade, String historicoMedico) {
+        this.nome = nome;
+        this.idade = idade;
+        this.historicoMedico = historicoMedico;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void atualizarHistorico(String novoHistorico) {
+        this.historicoMedico = novoHistorico;
+    }
+}
+package clinica;
+
+public class Medico {
+    private String nome;
+    private String especialidade;
+    private boolean disponibilidade;
+
+    public Medico(String nome, String especialidade) {
+        this.nome = nome;
+        this.especialidade = especialidade;
+        this.disponibilidade = true;
+    }
+
+    public void agendarConsulta() {
+        this.disponibilidade = false;
+        System.out.println("Consulta agendada com o Dr. " + nome);
+    }
+}
+package clinica;
+
+import core.Agendavel;
+import core.EntidadeGerenciavel;
+
+public class Consulta extends EntidadeGerenciavel implements Agendavel {
+    private Medico medico;
+    private Paciente paciente;
+    private String dataHora;
+
+    public Consulta(String id, String descricao, Medico medico, Paciente paciente) {
+        super(id, descricao);
+        this.medico = medico;
+        this.paciente = paciente;
+    }
+
+    @Override
+    public void agendar(String dataHora) {
+        this.dataHora = dataHora;
+        medico.agendarConsulta();
+    }
+
+    @Override
+    public void cancelarAgendamento() {
+        System.out.println("Consulta cancelada.");
+    }
+
+    @Override
+    public String getDetalhesAgendamento() {
+        return "Consulta com o Dr. " + medico + " para " + paciente.getNome();
+    }
+
+    @Override
+    public String gerarRelatorio() {
+        return "Consulta: " + getDescricao() + " com o médico " + medico;
+    }
+}
+package eventos;
+
+import core.Agendavel;
+import core.EntidadeGerenciavel;
+
+public class Evento extends EntidadeGerenciavel implements Agendavel {
+    private String dataHora;
+    private String local;
+
+    public Evento(String id, String descricao, String local) {
+        super(id, descricao);
+        this.local = local;
+    }
+
+    @Override
+    public void agendar(String dataHora) {
+        this.dataHora = dataHora;
+        System.out.println("Evento agendado para: " + dataHora);
+    }
+
+    @Override
+    public void cancelarAgendamento() {
+        System.out.println("Evento cancelado.");
+    }
+
+    @Override
+    public String getDetalhesAgendamento() {
+        return "Evento: " + getDescricao() + " no local " + local + " em " + dataHora;
+    }
+
+    @Override
+    public String gerarRelatorio() {
+        return "Evento: " + getDescricao() + ", Local: " + local;
+    }
+}
+package restaurante;
+
+import core.Agendavel;
+import core.EntidadeGerenciavel;
+
+public class ReservaMesa extends EntidadeGerenciavel implements Agendavel {
+    private int numeroMesa;
+    private String dataHora;
+
+    public ReservaMesa(String id, String descricao, int numeroMesa) {
+        super(id, descricao);
+        this.numeroMesa = numeroMesa;
+    }
+
+    @Override
+    public void agendar(String dataHora) {
+        this.dataHora = dataHora;
+        System.out.println("Mesa " + numeroMesa + " reservada para " + dataHora);
+    }
+
+    @Override
+    public void cancelarAgendamento() {
+        System.out.println("Reserva da mesa " + numeroMesa + " cancelada.");
+    }
+
+    @Override
+    public String getDetalhesAgendamento() {
+        return "Mesa " + numeroMesa + " reservada para " + dataHora;
+    }
+
+    @Override
+    public String gerarRelatorio() {
+        return "Reserva de Mesa: " + getDescricao() + ", Número: " + numeroMesa;
+    }
+}
+package gerenciador;
+
+import clinica.*;
+import eventos.*;
+import restaurante.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Exemplo de clínica
+        Medico medico = new Medico("Dr. João", "Cardiologia");
+        Paciente paciente = new Paciente("Maria", 45, "Histórico limpo");
+        Consulta consulta = new Consulta("C01", "Check-up anual", medico, paciente);
+        consulta.agendar("2024-12-01 10:00");
+
+        // Exemplo de evento
+        Evento evento = new Evento("E01", "Workshop Java", "Auditório A");
+        evento.agendar("2024-12-05 14:00");
+
+        // Exemplo de restaurante
+        ReservaMesa reserva = new ReservaMesa("R01", "Jantar de aniversário", 12);
+        reserva.agendar("2024-12-10 20:00");
+    }
+}
