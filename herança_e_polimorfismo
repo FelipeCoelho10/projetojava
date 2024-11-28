@@ -1,0 +1,131 @@
+public abstract class Entidade {
+    private String id; // Identificador genérico para qualquer entidade
+    private String nome;
+
+    // Construtor
+    public Entidade(String id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
+    // Getters
+    public String getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    // Método abstrato para exibir detalhes, será implementado pelas subclasses
+    public abstract void exibirDetalhes();
+}
+
+
+public interface Gerenciavel<T> {
+    void cadastrar(T obj);
+    void listar();
+    T buscarPorId(String id);
+}
+
+
+public class Participante extends Entidade {
+    private String contato;
+
+    public Participante(String id, String nome, String contato) {
+        super(id, nome);
+        this.contato = contato;
+    }
+
+    @Override
+    public void exibirDetalhes() {
+        System.out.println("Participante: " + getNome() + " | Contato: " + contato);
+    }
+}
+
+
+public class Mesa extends Entidade {
+    private boolean ocupada;
+
+    public Mesa(String id, String nome) {
+        super(id, nome);
+        this.ocupada = false;
+    }
+
+    public void ocuparMesa() {
+        if (!ocupada) {
+            ocupada = true;
+            System.out.println("Mesa " + getNome() + " ocupada.");
+        } else {
+            System.out.println("Mesa já está ocupada.");
+        }
+    }
+
+    public void liberarMesa() {
+        ocupada = false;
+        System.out.println("Mesa " + getNome() + " liberada.");
+    }
+
+    @Override
+    public void exibirDetalhes() {
+        System.out.println("Mesa: " + getNome() + " | Ocupada: " + ocupada);
+    }
+}
+
+import java.util.ArrayList;
+
+public class Gerenciador<T extends Entidade> implements Gerenciavel<T> {
+    private ArrayList<T> lista;
+
+    public Gerenciador() {
+        this.lista = new ArrayList<>();
+    }
+
+    @Override
+    public void cadastrar(T obj) {
+        lista.add(obj);
+        System.out.println(obj.getNome() + " cadastrado com sucesso.");
+    }
+
+    @Override
+    public void listar() {
+        for (T obj : lista) {
+            obj.exibirDetalhes();
+        }
+    }
+
+    @Override
+    public T buscarPorId(String id) {
+        for (T obj : lista) {
+            if (obj.getId().equals(id)) {
+                return obj;
+            }
+        }
+        System.out.println("Nenhuma entidade encontrada com o ID: " + id);
+        return null;
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        Gerenciador<Paciente> gerenciadorPacientes = new Gerenciador<>();
+        Gerenciador<Participante> gerenciadorParticipantes = new Gerenciador<>();
+        Gerenciador<Mesa> gerenciadorMesas = new Gerenciador<>();
+
+        // Cadastrando entidades
+        gerenciadorPacientes.cadastrar(new Paciente("P001", "João", 25, "Nenhum"));
+        gerenciadorParticipantes.cadastrar(new Participante("E001", "Maria", "12345-6789"));
+        gerenciadorMesas.cadastrar(new Mesa("M001", "Mesa 1"));
+
+        // Listando entidades
+        System.out.println("Pacientes:");
+        gerenciadorPacientes.listar();
+
+        System.out.println("\nParticipantes:");
+        gerenciadorParticipantes.listar();
+
+        System.out.println("\nMesas:");
+        gerenciadorMesas.listar();
+    }
+}
