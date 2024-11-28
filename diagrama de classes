@@ -1,0 +1,3 @@
+from IPython.display import Image
+
+Image(filename="/mnt/data/diagrama_classes_uml.png")
