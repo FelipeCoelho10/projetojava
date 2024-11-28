@@ -1,0 +1,164 @@
+// Paciente.java
+public class Paciente {
+    private String id;
+    private String nome;
+    private int idade;
+    private String historicoMedico;
+
+    public Paciente(String id, String nome, int idade, String historicoMedico) {
+        this.id = id;
+        this.nome = nome;
+        this.idade = idade;
+        this.historicoMedico = historicoMedico;
+    }
+
+    // Getters
+    public String getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public String getHistoricoMedico() {
+        return historicoMedico;
+    }
+}
+
+// GerenciadorPacientes.java
+import java.util.ArrayList;
+
+public class GerenciadorPacientes {
+    private ArrayList<Paciente> pacientes = new ArrayList<>();
+
+    // Método para adicionar pacientes
+    public void cadastrarPaciente(Paciente paciente) {
+        pacientes.add(paciente);
+    }
+
+    // Busca por ID
+    public Paciente buscar(String id) {
+        for (Paciente p : pacientes) {
+            if (p.getId().equals(id)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    // Busca por Nome
+    public ArrayList<Paciente> buscarPorNome(String nome) {
+        ArrayList<Paciente> resultado = new ArrayList<>();
+        for (Paciente p : pacientes) {
+            if (p.getNome().equalsIgnoreCase(nome)) {
+                resultado.add(p);
+            }
+        }
+        return resultado;
+    }
+
+    // Busca por Idade
+    public ArrayList<Paciente> buscarPorIdade(int idade) {
+        ArrayList<Paciente> resultado = new ArrayList<>();
+        for (Paciente p : pacientes) {
+            if (p.getIdade() == idade) {
+                resultado.add(p);
+            }
+        }
+        return resultado;
+    }
+}
+
+
+
+// GerenciadorEventos.java
+import java.util.ArrayList;
+
+public class GerenciadorEventos {
+    private ArrayList<Evento> eventos = new ArrayList<>();
+
+    // Cadastro de eventos
+    public void cadastrarEvento(Evento evento) {
+        eventos.add(evento);
+    }
+
+    // Busca por Nome
+    public Evento buscar(String nome) {
+        for (Evento e : eventos) {
+            if (e.getNome().equalsIgnoreCase(nome)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    // Busca por Data
+    public ArrayList<Evento> buscarPorData(String data) {
+        ArrayList<Evento> resultado = new ArrayList<>();
+        for (Evento e : eventos) {
+            if (e.getData().equals(data)) {
+                resultado.add(e);
+            }
+        }
+        return resultado;
+    }
+
+    // Busca por Capacidade Mínima
+    public ArrayList<Evento> buscarPorCapacidadeMinima(int capacidadeMinima) {
+        ArrayList<Evento> resultado = new ArrayList<>();
+        for (Evento e : eventos) {
+            if (e.getLocal().getCapacidade() >= capacidadeMinima) {
+                resultado.add(e);
+            }
+        }
+        return resultado;
+    }
+}
+
+
+
+// GerenciadorPedidos.java
+import java.util.ArrayList;
+
+public class GerenciadorPedidos {
+    private ArrayList<Pedido> pedidos = new ArrayList<>();
+
+    // Cadastro de pedidos
+    public void registrarPedido(Pedido pedido) {
+        pedidos.add(pedido);
+    }
+
+    // Relatório geral
+    public void gerarRelatorio() {
+        System.out.println("Relatório de Todos os Pedidos:");
+        for (Pedido p : pedidos) {
+            System.out.println("Pedido " + p.getNumeroPedido() + " - Total: R$" + p.calcularTotal());
+        }
+    }
+
+    // Relatório por Mesa
+    public void gerarRelatorio(int numeroMesa) {
+        System.out.println("Relatório de Pedidos da Mesa " + numeroMesa + ":");
+        for (Pedido p : pedidos) {
+            if (p.getNumeroMesa() == numeroMesa) {
+                System.out.println("Pedido " + p.getNumeroPedido() + " - Total: R$" + p.calcularTotal());
+            }
+        }
+    }
+
+    // Relatório por Faixa de Valor
+    public void gerarRelatorio(double minValor, double maxValor) {
+        System.out.println("Relatório de Pedidos na Faixa de R$" + minValor + " a R$" + maxValor + ":");
+        for (Pedido p : pedidos) {
+            double total = p.calcularTotal();
+            if (total >= minValor && total <= maxValor) {
+                System.out.println("Pedido " + p.getNumeroPedido() + " - Total: R$" + total);
+            }
+        }
+    }
+}
